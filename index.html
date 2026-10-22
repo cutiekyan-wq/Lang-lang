@@ -53,9 +53,26 @@
             border: 1px solid #ffe3e3;
             z-index: 10;
             position: relative;
-
-            /* Entry Animation */
             animation: fadeInUp 1.2s ease-out forwards;
+        }
+
+        /* Music Toggle Button */
+        .music-btn {
+            background-color: #ffe3e3;
+            color: #ff6b6b;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: background 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .music-btn:active {
+            transform: scale(0.95);
         }
 
         h1 {
@@ -157,6 +174,9 @@
 
     <!-- Main Card -->
     <div class="card">
+        <!-- Music Control Button (Mobile Friendly) -->
+        <button class="music-btn" id="musicBtn">🎵 Tap to Play Music</button>
+
         <h1>Happy 2nd Monthsary, Ericha! ❤️</h1>
         
         <p>Hi Ericha,</p>
@@ -171,8 +191,8 @@
     </div>
 
     <script>
-        // Wait for page to fully load before enabling JS click interactions
         document.addEventListener('DOMContentLoaded', function() {
+            // Heart Burst Interaction
             const heartBtn = document.getElementById('heartBtn');
             const icons = ['❤️', '💖', '💕', '💗'];
 
@@ -201,6 +221,69 @@
                     setTimeout(() => burst.remove(), 800);
                 }
             });
+
+            // Mobile-Friendly Web Audio API Romantic Melody Generator
+            const musicBtn = document.getElementById('musicBtn');
+            let audioCtx = null;
+            let isPlaying = false;
+            let timer = null;
+
+            // Sweet romantic note frequencies (C Major / A Minor lullaby feel)
+            const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25]; 
+            const melody = [0, 2, 4, 3, 2, 1, 0, 4]; // simple sequence
+
+            musicBtn.addEventListener('click', function() {
+                if (!isPlaying) {
+                    // Initialize Audio Context on user tap (required for mobile safari/chrome)
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    isPlaying = true;
+                    musicBtn.textContent = "🔊 Pause Music";
+                    playLullaby();
+                } else {
+                    isPlaying = false;
+                    clearTimeout(timer);
+                    if (audioCtx && audioCtx.state !== 'closed') {
+                        audioCtx.close();
+                    }
+                    musicBtn.textContent = "🎵 Tap to Play Music";
+                }
+            });
+
+            function playLullaby() {
+                if (!isPlaying) return;
+
+                let noteIndex = 0;
+
+                function nextNote() {
+                    if (!isPlaying) return;
+
+                    try {
+                        const osc = audioCtx.createOscillator();
+                        const gainNode = audioCtx.createGain();
+
+                        osc.type = 'sine'; // Soft tone resembling a music box
+                        osc.frequency.setValueAtTime(notes[melody[noteIndex]], audioCtx.currentTime);
+
+                        // Smooth fade in and out envelope
+                        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                        gainNode.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.1);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+
+                        osc.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + 1.3);
+
+                        noteIndex = (noteIndex + 1) % melody.length;
+                        timer = setTimeout(nextNote, 600);
+                    } catch (e) {
+                        console.log(e);
+                    }
+                }
+
+                nextNote();
+            }
         });
     </script>
 </body>
