@@ -108,7 +108,7 @@
             font-size: 16px;
         }
 
-        /* Animations */
+        /* Keyframe Animations */
         @keyframes fadeInUp {
             0% {
                 opacity: 0;
@@ -165,22 +165,23 @@
 </head>
 <body>
 
-    <!-- Background Floating Hearts -->
+    <!-- Background Hearts -->
     <div class="bg-heart">❤️</div>
     <div class="bg-heart">💖</div>
     <div class="bg-heart">❤️</div>
     <div class="bg-heart">💕</div>
     <div class="bg-heart">❤️</div>
 
-    <!-- Embedded Self-Contained Audio Stream -->
-    <audio id="bgMusic" loop preload="auto">
-        <source src="data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//7UYAAAAAAA8A4AAAAAAT8AAGsAABAAAYpAAGUACX8AAN4AAAAA3f/2p4AM/M/e5/2/mX6f//f4f/////93/+c8ABAA/4ACgAwAAP/xQAAD/7UQAI4AAADSAAAAABA3f/6I2m5OIAAAANAAAAAgA8A4AAAE5AAAAA=" type="audio/mp3">
+    <!-- Audio element with direct web stream + local fallback -->
+    <audio id="bgMusic" loop preload="auto" crossorigin="anonymous">
+        <source src="song.mp3" type="audio/mp3">
+        <source src="https://ia800902.us.archive.org/27/items/TillTheyTakeMyHeartAway/Till%20They%20Take%20My%20Heart%20Away.mp3" type="audio/mp3">
     </audio>
 
     <!-- Main Card -->
     <div class="card">
-        <!-- Mobile Play Button -->
-        <button class="music-btn" id="musicBtn">🎵 Play Our Song</button>
+        <!-- Mobile Audio Control Button -->
+        <button class="music-btn" id="musicBtn">🎵 Play "Till They Take My Heart Away"</button>
 
         <h1>Happy 2nd Monthsary, Ericha! ❤️</h1>
         
@@ -202,21 +203,26 @@
             const heartBtn = document.getElementById('heartBtn');
             const icons = ['❤️', '💖', '💕', '💗'];
 
-            // Mobile-Friendly Audio Toggle
+            // Mobile Play/Pause Logic
             musicBtn.addEventListener('click', function() {
                 if (bgMusic.paused) {
                     bgMusic.play().then(() => {
                         musicBtn.textContent = "🔊 Pause Music";
-                    }).catch(error => {
-                        console.log("Audio playback error:", error);
+                    }).catch(err => {
+                        console.log("Error playing audio:", err);
+                        // Fallback attempt to force reload audio
+                        bgMusic.load();
+                        bgMusic.play().then(() => {
+                            musicBtn.textContent = "🔊 Pause Music";
+                        });
                     });
                 } else {
                     bgMusic.pause();
-                    musicBtn.textContent = "🎵 Play Our Song";
+                    musicBtn.textContent = "🎵 Play \"Till They Take My Heart Away\"";
                 }
             });
 
-            // Tap Heart Burst Interaction
+            // Heart Pop Tap Interaction
             heartBtn.addEventListener('click', function(e) {
                 const rect = heartBtn.getBoundingClientRect();
                 const x = rect.left + rect.width / 2;
