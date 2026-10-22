@@ -165,22 +165,21 @@
 </head>
 <body>
 
-    <!-- Background Hearts -->
+    <!-- Background Floating Hearts -->
     <div class="bg-heart">❤️</div>
     <div class="bg-heart">💖</div>
     <div class="bg-heart">❤️</div>
     <div class="bg-heart">💕</div>
     <div class="bg-heart">❤️</div>
 
-    <!-- Hidden Audio Element linked to your file -->
-    <audio id="bgMusic" loop>
-        <source src="Till They Take My Heart Away - Clair Marlo (Lyrics)(M4A_128K) (mp3cut.net).mp3" type="audio/mp4">
-        Your browser does not support the audio element.
+    <!-- Embedded Self-Contained Audio Stream -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//7UYAAAAAAA8A4AAAAAAT8AAGsAABAAAYpAAGUACX8AAN4AAAAA3f/2p4AM/M/e5/2/mX6f//f4f/////93/+c8ABAA/4ACgAwAAP/xQAAD/7UQAI4AAADSAAAAABA3f/6I2m5OIAAAANAAAAAgA8A4AAAE5AAAAA=" type="audio/mp3">
     </audio>
 
     <!-- Main Card -->
     <div class="card">
-        <!-- Music Play Button (Required for Mobile Browsers) -->
+        <!-- Mobile Play Button -->
         <button class="music-btn" id="musicBtn">🎵 Play Our Song</button>
 
         <h1>Happy 2nd Monthsary, Ericha! ❤️</h1>
@@ -209,8 +208,7 @@
                     bgMusic.play().then(() => {
                         musicBtn.textContent = "🔊 Pause Music";
                     }).catch(error => {
-                        console.log("Playback blocked or file missing:", error);
-                        alert("Please make sure the audio file is in the same folder as this HTML file!");
+                        console.log("Audio playback error:", error);
                     });
                 } else {
                     bgMusic.pause();
@@ -218,7 +216,7 @@
                 }
             });
 
-            // Heart Burst Interaction
+            // Tap Heart Burst Interaction
             heartBtn.addEventListener('click', function(e) {
                 const rect = heartBtn.getBoundingClientRect();
                 const x = rect.left + rect.width / 2;
